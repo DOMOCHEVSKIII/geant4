@@ -72,14 +72,14 @@ class X5DetectorConstruction(G4VUserDetectorConstruction):
         #lEllipsoid2 = G4LogicalVolume(sEllipsoid2, mat4, "Benzenebody")
         #pEllipsoid2 = G4PVPlacement(None, G4ThreeVector(0,-0.6*x_axis4,), lEllipsoid2, "Benzenebody", lSphere3, True, 0, checkOverlaps)
         
-        shift = -1*y_axis4
+        shift = -0.8*y_axis4
         zTrans = G4ThreeVector(0, shift, 0)
         sCutBrain = G4SubtractionSolid("Brain", sEllipsoid1, sEllipsoid2, G4RotationMatrix(), zTrans)
         lLowerBrain = G4LogicalVolume (sEllipsoid2, mat4, "LowerBrain")
         lUpperBrain = G4LogicalVolume (sCutBrain, mat3, "UpperBrain")
 
-        G4PVPlacement (None, G4ThreeVector(0,0.5*y_axis4,0), lUpperBrain, "UpperBrain", lSphere3, True, 0, checkOverlaps)
-        G4PVPlacement (None, G4ThreeVector(0,-0.5*y_axis4,0), lLowerBrain, "LowerBrain", lSphere3, True, 0, checkOverlaps)
+        G4PVPlacement (None, -0.5*zTrans, lUpperBrain, "UpperBrain", lSphere3, True, 0, checkOverlaps)
+        G4PVPlacement (None, 0.5*zTrans, lLowerBrain, "LowerBrain", lSphere3, True, 0, checkOverlaps)
 
         self.fScoringVolume = lSphere4
  
