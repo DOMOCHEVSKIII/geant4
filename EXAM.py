@@ -17,6 +17,8 @@ class EXAMDetectorConstruction(G4VUserDetectorConstruction):
         envelop_x = 30*cm
         envelop_y = 30*cm
         envelop_z = 30*cm
+        leg_rad = 0.5*envelop_y
+        leg_height = 0.7*envelop_z
         envelop_mat = nist.FindOrBuildMaterial("G4_AIR")
         Huckle_mat = nist.FindOrBuildMaterial("G4_TISSUE_SOFT_ICRP")
 
@@ -25,9 +27,9 @@ class EXAMDetectorConstruction(G4VUserDetectorConstruction):
         world_x = 2*envelop_x
         world_y = 2*envelop_y
         world_z = 2*envelop_z
-        box_x = 1.5*envelop_x
-        box_y = 1.5*envelop_y
-        box_z = 1.5*envelop_z
+        box_x = 2.1*leg_rad
+        box_y = 2.1*leg_rad
+        box_z = 2.1*leg_height
 
         sWorld = G4Box("World", 0.5*world_x, 0.5*world_y, 0.5*world_z)
         lWorld = G4LogicalVolume(sWorld, envelop_mat, "World")
@@ -37,7 +39,7 @@ class EXAMDetectorConstruction(G4VUserDetectorConstruction):
         lBox = G4LogicalVolume(sBox, envelop_mat, "Box")
         pBox = G4PVPlacement (None, G4ThreeVector(), lBox, "Box", lWorld, True, 0, checkOverlaps)
 
-        sHuckle = G4Tubs ("Huckle", 0, 0.5*envelop_y, 0.7*envelop_z, 2*math.pi, 2*math.pi)
+        sHuckle = G4Tubs ("Huckle", 0, leg_rad, leg_height, 2*math.pi, 2*math.pi)
         lHuckle = G4LogicalVolume(sHuckle,Huckle_mat, "Huckle")
         pHuckle = G4PVPlacement (None, G4ThreeVector(), lHuckle, "Huckle", lBox, True, 0, checkOverlaps)
 
@@ -72,7 +74,7 @@ class EXAMPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
         particleTable = G4ParticleTable.GetParticleTable()
         particle = particleTable.FindParticle("e+")
         self.fParticleGun.SetParticleDefinition(particle)
-        self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(1,1,1))
+        self.fParticleGun.SetParticleMomentumDirection(G4ThreeVector(1,1,0))
         self.fParticleGun.SetParticleEnergy(0.4*MeV)
 
     def GeneratePrimaries(self, anEvent):
@@ -98,7 +100,7 @@ class EXAMPrimaryGeneratorAction(G4VUserPrimaryGeneratorAction):
 
             x0 = -0.5 * envSizeX
             y0 = -0.5 * envSizeY
-            z0 = -0.5 * envSizeZ
+            z0 = 0
  
             self.fParticleGun.SetParticlePosition(G4ThreeVector(x0, y0, z0))
             self.fParticleGun.GeneratePrimaryVertex(anEvent)
